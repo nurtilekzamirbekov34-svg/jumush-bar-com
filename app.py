@@ -92,6 +92,9 @@ def add():
     }
     jobs.insert(0, new_job)
     return redirect(url_for('index'))
+app = app
 
+if __name__ == "__main__":
+    app.run(debug=True)
 
    
