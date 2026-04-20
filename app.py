@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template_string, request, redirect, url_for
 
 app = Flask(__name__)
@@ -92,9 +91,7 @@ def add():
     }
     jobs.insert(0, new_job)
     return redirect(url_for('index'))
-app = app
 
 if __name__ == "__main__":
     app.run(debug=True)
-
    
