@@ -6,107 +6,53 @@ app.secret_key = 'premium_key_2026'
 # Убактылуу база
 users = {}
 jobs = [
-    {"cat": "Медиа", "loc": "Бишкек", "title": "Мобилограф", "price": "45000 сом", "wa": "996555001122"},
-    {"cat": "IT", "loc": "Ош", "title": "Программист", "price": "80000 сом", "wa": "996700112233"},
+    {"cat": "содержание", "loc": "Бишкек", "title": "Мобилограф", "price": "45000 сом", "wa": "996555001122"},
+    {"cat": "ЭТО", "loc": "Ош", "title": "Программист", "price": "80000 сом", "wa": "996700112233"},
     {"cat": "Кызмат", "loc": "Бишкек", "title": "Администратор", "price": "30000 сом", "wa": "996500445566"}
 ]
 
-HTML_MAIN = """
+HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ky">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUMUSH BAR | Professional</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+    <title>ЖУМУШ КАРТА</title>
     <style>
-        :root { --bg: #ffffff; --text: #0f172a; --accent: #2563eb; --card: rgba(255, 255, 255, 0.8); }
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0; background: var(--bg); color: var(--text);
-            overflow-x: hidden;
-        }
-
-        /* Анимацияланган фон */
-        .animated-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-        .shape {
-            position: absolute; border-radius: 50%;
-            background: linear-gradient(45deg, rgba(37,99,235,0.05), rgba(37,99,235,0.02));
-            animation: move 20s infinite alternate;
-        }
-
-        @keyframes move {
-            from { transform: translate(0, 0); }
-            to { transform: translate(100px, 100px); }
-        }
-
-        header { padding: 60px 20px; text-align: center; }
-        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0; }
-        
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-
-        /* Категориялар */
-        .categories {
-            display: flex; gap: 10px; overflow-x: auto; padding: 20px 0;
-            justify-content: center; scrollbar-width: none;
-        }
-        .cat-tag {
-            padding: 8px 20px; background: white; border: 1px solid #e2e8f0;
-            border-radius: 50px; font-size: 0.9rem; white-space: nowrap; cursor: pointer;
-        }
-
-        /* Карта стили */
-        .job-card {
-            background: var(--card); backdrop-filter: blur(20px);
-            border: 1px solid rgba(0,0,0,0.05); border-radius: 24px;
-            padding: 25px; margin-bottom: 20px; display: flex;
-            justify-content: space-between; align-items: center;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .job-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: #000; }
-
-        .btn-black {
-            background: #000; color: #fff; padding: 14px 28px;
-            border-radius: 14px; text-decoration: none; font-weight: 600;
-        }
-        
-        .price { font-size: 1.4rem; font-weight: 800; color: #000; }
-        .wa-btn {
-            color: #25d366; text-decoration: none; font-weight: 700;
-            padding: 8px 16px; border: 1.5px solid #25d366; border-radius: 12px;
-        }
-        .wa-btn:hover { background: #25d366; color: #fff; }
-
-        .user-auth { position: absolute; top: 20px; right: 20px; }
+        body { font-family: sans-serif; background: #1a1a1a; color: white; text-align: center; padding: 20px; }
+        .header h1 { color: #00ff41; }
+        .btn { display: inline-block; padding: 10px 20px; margin: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+        .btn-green { background: #4CAF50; color: white; }
+        .btn-outline { border: 1px solid #4CAF50; color: #4CAF50; }
+        .job-card { background: #333; padding: 15px; margin: 10px auto; border-radius: 10px; max-width: 400px; text-align: left; }
+        .price { color: #00ff41; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="animated-bg">
-        <div class="shape" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
-        <div class="shape" style="width: 300px; height: 300px; bottom: 10%; right: 5%; animation-duration: 15s;"></div>
+    <div class="header">
+        <h1>ЖУМУШ КАРТА</h1>
+        <a href="https://wa.me/996XXXXXXXXX" class="btn btn-outline">Кирүү / Каттоо</a>
+        <a href="https://wa.me/996XXXXXXXXX" class="btn btn-green">+ Жумуш кошуу</a>
+        <p style="color:#888;">Учурдагы жумуштар:</p>
     </div>
 
-    <div class="user-auth">
-        {% if user %}
-            <span>{{ user }}</span> | <a href="/logout">Чыгуу</a>
-        {% else %}
-            <a href="/login" class="cat-tag" style="text-decoration:none;">Кирүү</a>
-        {% endif %}
+    {% for job in jobs %}
+    <div class="job-card">
+        <div style="font-size: 0.8rem; color: #888;">📍 {{ job.loc }}</div>
+        <div style="font-weight: bold; font-size: 1.2rem;">{{ job.title }}</div>
+        <div class="price">{{ job.price }}</div>
+        <a href="https://wa.me/{{ job.wa }}" style="color: #25d366; text-decoration: none;">WhatsApp жазуу →</a>
     </div>
+    {% endfor %}
+</body>
+</html>
+"""
 
-    <header>
-        <h1>Jumush Bar</h1>
-        <p style="color: #64748b;">Профессионалдык жумуш издөө жана жарыялоо</p>
-    </header>
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE, jobs=jobs)
 
-    <div class="container">
-        <div style="text-align:center; margin-bottom: 40px;">
-            <a href="/add" class="btn-black">+ Жарыя кошуу</a>
-        </div>
-
-        <div class="categories">
-            <div class="cat-tag">Бардыгы</div>
+# Vercel үчүн маанилүү бөлүк
+if __name__ == "__main__":
+    app.run()
