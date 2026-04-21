@@ -258,3 +258,180 @@ def login():
     return "<h3>Бул бөлүм жакында ишке кирет (Каттоо базасы түзүлүүдө...)</h3><a href='/'>Артка</a>"
 
 app = app
+from flask import Flask, render_template_string, request, redirect
+
+app = Flask(__name__)
+
+# Убактылуу база
+jobs = [
+    {"location": "📍 Центр", "title": "Официант", "price": "1200 сом", "wa": "996555001122"}
+]
+
+HTML_MAIN = """
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+    <title>ЖУМУШ КАРТА</title>
+    <style>
+        :root { --accent: #00ff41; --bg: #050505; --card-bg: #111; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            text-align: center; 
+            padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Анимацияланган башкы тема */
+        h1 { 
+            font-size: 2.5rem; 
+            text-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .btn-group { margin: 30px 0; }
+
+        /* Баскычтардын анимациясы */
+        .btn { 
+            padding: 15px 25px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            margin: 10px; 
+            display: inline-block; 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-green { 
+            background: var(--accent); 
+            color: #000; 
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .btn-green:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 20px rgba(0, 255, 65, 0.4); 
+        }
+
+        .btn-outline { 
+            border: 2px solid var(--accent); 
+            color: var(--accent); 
+        }
+
+        .btn-outline:hover { 
+            background: var(--accent); 
+            color: #000; 
+        }
+
+        /* Жумуш карталарынын анимациясы */
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 20px; 
+            margin: 20px auto; 
+            max-width: 450px; 
+            border: 1px solid #222; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            opacity: 0;
+            animation: slideUp 0.5s forwards ease-out;
+        }
+
+        .card:hover { 
+            transform: scale(1.03); 
+            border-color: var(--accent); 
+            background: #161616;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .price { 
+            font-size: 1.5rem; 
+            color: var(--accent); 
+            font-weight: 900; 
+        }
+
+        .wa-link {
+            display: block;
+            margin-top: 15px;
+            color: #25d366;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid #25d366;
+            padding: 8px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .wa-link:hover { background: rgba(37, 211, 102, 0.1); }
+
+    </style>
+</head>
+<body>
+    <header style="padding-top: 50px;">
+        <h1>ЖУМУШ КАРТА</h1>
+        <p style="color: #888;">Бишкек боюнча ыкчам жумуштар</p>
+    </header>
+
+    <div class="btn-group">
+        <a href="/login" class="btn btn-outline">👤 КИРҮҮ</a>
+        <a href="/add" class="btn btn-green">🚀 ЖУМУШ КОШУУ</a>
+    </div>
+    
+    <h2 style="margin-top: 50px; font-size: 1.2rem; color: #555;">ЖАҢЫ ЖАРЫЯЛАР</h2>
+
+    <div class="container">
+        {% for job in jobs %}
+        <div class="card" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+            <p style="text-align: left; color: #666; font-size: 0.8rem;">ЛОКАЦИЯ:</p>
+            <h3 style="margin-top: 0; text-align: left;">{{ job.location }}</h3>
+            <p style="text-align: left; font-size: 1.2rem;">{{ job.title }}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <span class="price">{{ job.price }}</span>
+                <a href="https://wa.me/{{ job.wa }}" class="wa-link">WhatsApp-ка жазуу</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <footer style="margin-top: 100px; padding: 20px; color: #333;">
+        <p>© 2026 JUMUSH BAR - КЫРГЫЗСТАН</p>
+    </footer>
+</body>
+</html>
+"""
+
+# (Калган /add жана /login бөлүктөрү мурункудай калат)
+@app.route('/')
+def index():
+    return render_template_string(HTML_MAIN, jobs=jobs)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_job():
+    if request.method == 'POST':
+        new_job = {
+            "location": "📍 " + request.form.get('location'),
+            "title": request.form.get('title'),
+            "price": request.form.get('price'),
+            "wa": request.form.get('wa')
+        }
+        jobs.append(new_job)
+        return redirect('/')
+    return render_template_string(HTML_ADD_TEMPLATE) # HTML_ADD кодун өзгөртп
