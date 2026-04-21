@@ -105,3 +105,68 @@ def index():
 
 # Vercel үчүн маанилүү
 app = app
+from flask import Flask, render_template_string, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Бул жерде убактылуу жумуштар сакталат (база кошулганга чейин)
+jobs = [
+    {"location": "📍 Центр", "title": "Официант", "price": "1200 сом", "wa": "996..."},
+]
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЖУМУШ КАРТА</title>
+    <style>
+        :root { --accent: #00ff41; --bg: #050505; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 20px; }
+        
+        /* Жаңы баскычтардын стили */
+        .nav-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .btn { 
+            padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem;
+            transition: 0.3s; border: 1px solid var(--accent);
+        }
+        .btn-login { color: var(--accent); background: transparent; }
+        .btn-add { background: var(--accent); color: #000; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .job-card { background: #111; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #222; }
+        .price { color: var(--accent); font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ЖУМУШ КАРТА</h1>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="#" class="btn btn-login">Кирүү / Катталуу</a>
+        <a href="#" class="btn btn-add">+ Жумуш кошуу</a>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+        <p style="text-align: center; color: #666;">Учурдагы жумуштар:</p>
+        {% for job in jobs %}
+        <div class="job-card">
+            <div style="color: var(--accent); font-size: 0.8rem;">{{ job.location }}</div>
+            <div style="font-size: 1.2rem; margin: 5px 0;">{{ job.title }}</div>
+            <div class="price">{{ job.price }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+"""
+
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE, jobs=jobs)
+
+if __name__ == '__main__':
+    app.run(debug=True)
