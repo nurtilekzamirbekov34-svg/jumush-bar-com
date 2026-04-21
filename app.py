@@ -69,6 +69,7 @@ HTML_TEMPLATE = """
             font-size: 0.9rem;
         }
     </style>
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
 </head>
 <body>
     <div class="header">
