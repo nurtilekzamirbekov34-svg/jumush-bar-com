@@ -67,7 +67,11 @@ HTML_TEMPLATE = """
             font-weight: bold; 
             font-size: 0.9rem;
         }
-    </style>
+    </style><meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+</head>
+<body>
+    <div class="header">
+        <h1 style="margin:0;">ЖУМУШ КАРТА</h1>
 </head><meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
 <body>
     <div class="header">
