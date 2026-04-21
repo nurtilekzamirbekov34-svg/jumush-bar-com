@@ -435,3 +435,116 @@ def add_job():
         jobs.append(new_job)
         return redirect('/')
     return render_template_string(HTML_ADD_TEMPLATE) # HTML_ADD кодун өзгөртп
+from flask import Flask, render_template_string, request, redirect
+
+app = Flask(__name__)
+
+# Убактылуу база
+jobs = [
+    {"location": "📍 Центр", "title": "Официант", "price": "1200 сом", "wa": "996555001122"}
+]
+
+HTML_MAIN = """
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+    <title>ЖУМУШ КАРТА</title>
+    <style>
+        :root { --accent: #00ff41; --bg: #050505; --card-bg: rgba(20, 20, 20, 0.9); }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff; 
+            text-align: center; 
+            padding: 20px;
+            margin: 0;
+        }
+
+        header { padding-top: 80px; margin-bottom: 40px; }
+
+        h1 { 
+            font-size: 3rem; 
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .btn-group { margin: 40px 0; }
+
+        .btn { 
+            padding: 18px 35px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            font-weight: 800; 
+            margin: 10px; 
+            display: inline-block; 
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-green { 
+            background: var(--accent); 
+            color: #000; 
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        .btn-green:hover { 
+            transform: scale(1.1); 
+            box-shadow: 0 0 30px var(--accent); 
+        }
+
+        .btn-outline { 
+            border: 2px solid #fff; 
+            color: #fff; 
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-outline:hover { 
+            background: #fff; 
+            color: #000; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 25px; 
+            margin: 25px auto; 
+            max-width: 500px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px);
+            transition: 0.4s;
+            animation: slideUp 0.6s forwards ease-out;
+        }
+
+        .card:hover { 
+            border-color: var(--accent); 
+            transform: translateY(-10px);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .price { font-size: 1.8rem; color: var(--accent); font-weight: 900; }
+        
+        .wa-link {
+            display: inline-block;
+            color: #25d3
