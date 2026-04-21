@@ -170,3 +170,91 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+from flask import Flask, render_template_string, request, redirect
+
+app = Flask(__name__)
+
+# Убактылуу база (сайт өчкөндө маалымат тазаланат, кийин чыныгы базага туташтырабыз)
+jobs = [
+    {"location": "📍 Центр", "title": "Официант", "price": "1200 сом", "wa": "996555001122"}
+]
+
+# БАШКЫ БАРАКЧА
+HTML_MAIN = """
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+    <title>ЖУМУШ КАРТА</title>
+    <style>
+        :root { --accent: #00ff41; --bg: #050505; }
+        body { font-family: sans-serif; background: var(--bg); color: #fff; text-align: center; padding: 20px; }
+        .btn-group { margin-bottom: 30px; }
+        .btn { padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin: 5px; display: inline-block; }
+        .btn-green { background: var(--accent); color: #000; }
+        .btn-outline { border: 1px solid var(--accent); color: var(--accent); }
+        .card { background: #111; padding: 15px; border-radius: 10px; margin: 10px auto; max-width: 400px; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+    <h1>ЖУМУШ КАРТА</h1>
+    <div class="btn-group">
+        <a href="/login" class="btn btn-outline">Кирүү / Каттоо</a>
+        <a href="/add" class="btn btn-green">+ Жумуш кошуу</a>
+    </div>
+    
+    <h3>Учурдагы жумуштар:</h3>
+    {% for job in jobs %}
+    <div class="card">
+        <p><b>{{ job.location }}</b></p>
+        <p>{{ job.title }} - <span style="color:var(--accent)">{{ job.price }}</span></p>
+        <a href="https://wa.me/{{ job.wa }}" style="color:#25d366; text-decoration:none;">WhatsApp</a>
+    </div>
+    {% endfor %}
+</body>
+</html>
+"""
+
+# ЖУМУШ КОШУУ БАРАКЧАСЫ
+HTML_ADD = """
+<!DOCTYPE html>
+<html lang="ky">
+<head><title>Жумуш кошуу</title></head>
+<body style="background:#050505; color:white; text-align:center; font-family:sans-serif;">
+    <h2>Жаңы жумуш кошуу</h2>
+    <form method="POST" style="display:inline-block; text-align:left; background:#111; padding:20px; border-radius:10px;">
+        Район: <br><input name="location" placeholder="Мисалы: Центр" required style="margin-bottom:10px;"><br>
+        Жумуштун аты: <br><input name="title" placeholder="Мисалы: Ашпозчу" required style="margin-bottom:10px;"><br>
+        Акысы: <br><input name="price" placeholder="1500 сом" required style="margin-bottom:10px;"><br>
+        WhatsApp номер: <br><input name="wa" placeholder="996700112233" required style="margin-bottom:20px;"><br>
+        <button type="submit" style="background:#00ff41; border:none; padding:10px; width:100%; font-weight:bold;">ЖАРЫЯЛОО</button>
+    </form>
+    <br><br><a href="/" style="color:gray;">Артка кайт</a>
+</body>
+</html>
+"""
+
+@app.route('/')
+def index():
+    return render_template_string(HTML_MAIN, jobs=jobs)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_job():
+    if request.method == 'POST':
+        new_job = {
+            "location": "📍 " + request.form.get('location'),
+            "title": request.form.get('title'),
+            "price": request.form.get('price'),
+            "wa": request.form.get('wa')
+        }
+        jobs.append(new_job)
+        return redirect('/')
+    return render_template_string(HTML_ADD)
+
+@app.route('/login')
+def login():
+    return "<h3>Бул бөлүм жакында ишке кирет (Каттоо базасы түзүлүүдө...)</h3><a href='/'>Артка</a>"
+
+app = app
