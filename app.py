@@ -118,3 +118,101 @@ def login():
 
 # Бул жер маанилүү!
 app = app
+from flask import Flask, render_template_string, request, redirect, session
+
+app = Flask(__name__)
+app.secret_key = 'jumush-bar-2026'
+
+jobs = [
+    {"location": "📍 Бишкек", "title": "Мобилограф жардамчысы", "price": "1500 сом", "wa": "996..."},
+]
+
+HTML_MAIN = """
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUMUSH BAR | Жумуш Карта</title>
+    <style>
+        :root { --accent: #00ff41; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; background: #000; color: white; }
+        
+        /* Видео фондун стили */
+        .video-bg {
+            position: fixed; right: 0; bottom: 0;
+            min-width: 100%; min-height: 100%;
+            z-index: -1; filter: brightness(0.4);
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: relative; z-index: 1;
+            padding: 20px; text-align: center;
+        }
+
+        h1 { font-size: 3.5rem; letter-spacing: 5px; text-shadow: 0 0 20px var(--accent); margin-top: 50px; }
+        
+        .btn {
+            padding: 15px 30px; border-radius: 50px; text-decoration: none;
+            font-weight: bold; transition: 0.3s; display: inline-block; margin: 10px;
+        }
+        .btn-primary { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent); }
+        .btn-outline { border: 2px solid white; color: white; backdrop-filter: blur(5px); }
+
+        .job-container { max-width: 600px; margin: 50px auto; }
+        .job-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px; border-radius: 25px; margin-bottom: 20px;
+            text-align: left; transition: 0.4s;
+        }
+        .job-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="video-bg">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-business-people-working-together-in-an-office-4340-large.mp4" type="video/mp4">
+    </video>
+
+    <div class="overlay">
+        <h1>JUMUSH BAR</h1>
+        <p style="font-size: 1.2rem; opacity: 0.8;">Бишкек шаарындагы эң тез жумуш табуу кызматы</p>
+        
+        <div style="margin: 40px 0;">
+            <a href="/login" class="btn btn-outline">👤 КИРҮҮ</a>
+            <a href="/add" class="btn btn-primary">🚀 ЖАРЫЯ КОШУУ</a>
+        </div>
+
+        <div class="job-container">
+            <h2 style="text-align: left; border-left: 4px solid var(--accent); padding-left: 15px;">ЖАҢЫ ЖУМУШТАР</h2>
+            {% for job in jobs %}
+            <div class="job-card">
+                <span style="color: var(--accent); font-size: 0.8rem; font-weight: bold;">{{ job.location }}</span>
+                <h3 style="margin: 10px 0;">{{ job.title }}</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 1.5rem; font-weight: bold;">{{ job.price }}</span>
+                    <a href="https://wa.me/{{ job.wa }}" style="color: #25d366; text-decoration: none; border: 1px solid #25d366; padding: 5px 15px; border-radius: 10px;">WhatsApp</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+@app.route('/')
+def index():
+    return render_template_string(HTML_MAIN, jobs=jobs)
+
+@app.route('/add')
+def add():
+    return "Жумуш кошуу формасы (база туташтырылгандан кийин ишке кирет)"
+
+@app.route('/login')
+def login():
+    return "Кирүү барагы"
+
+app = app
