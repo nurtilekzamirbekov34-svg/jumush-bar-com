@@ -2,11 +2,11 @@ from flask import Flask, render_template_string, request, redirect
 
 app = Flask(__name__)
 
-# Убактылуу жумуштардын тизмеси
+# Жумуштардын тизмеси
 jobs = [
-    {"location": "📍 Центр", "title": "Официант (кечки нөөмөт)", "price": "1200 сом/күн", "wa": "996555001122"},
-    {"location": "📍 Дордой", "title": "Жүктөгүч (грузчик)", "price": "2000 сом/күн", "wa": "996700112233"},
-    {"location": "📍 Түштүк магистраль", "title": "Курьер", "price": "1500 сом/күн", "wa": "996500445566"}
+    {"location": "Бишкек", "title": "Мобилограф / Видеомейкер", "price": "40 000 сом", "wa": "996555001122"},
+    {"location": "Ош", "title": "SMM адиси", "price": "25 000 сом", "wa": "996700112233"},
+    {"location": "Бишкек", "title": "Графикалык дизайнер", "price": "50 000 сом", "wa": "996500445566"}
 ]
 
 HTML_MAIN = """
@@ -15,58 +15,92 @@ HTML_MAIN = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЖУМУШ КАРТА</title>
+    <title>JUMUSH BAR | Профессионалдык деңгээл</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #00ff41; --bg: #0a0a0a; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding: 0; }
-        .promo { background: var(--accent); color: black; padding: 10px; font-weight: bold; text-align: center; font-size: 0.8rem; }
-        header { background: #000; padding: 40px 20px; text-align: center; border-bottom: 1px solid #222; }
-        .container { max-width: 500px; margin: 20px auto; padding: 0 15px; }
-        .add-btn { background: var(--accent); color: black; display: block; text-align: center; padding: 18px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-bottom: 30px; transition: 0.3s; }
-        .add-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0,255,65,0.4); }
-        .job-card { background: #161616; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #222; transition: 0.3s; }
-        .job-card:hover { border-color: var(--accent); }
-        .job-title { font-size: 1.2rem; margin: 5px 0; font-weight: bold; }
-        .price { color: var(--accent); font-size: 1.4rem; font-weight: 900; }
-        .wa-btn { background: #25d366; color: white; text-decoration: none; padding: 12px 25px; border-radius: 10px; display: inline-block; font-weight: bold; margin-top: 15px; }
-        footer { text-align: center; padding: 50px; color: #444; font-size: 0.8rem; }
-    </style>
-</head>
-<body>
-    <div class="promo">БИШКЕК ШААРЫ БОЮНЧА АКЫСЫЗ ЖАРЫЯЛАР ПЛАТФОРМАСЫ</div>
-    <header>
-        <h1 style="margin:0; font-size: 2.5rem; text-shadow: 0 0 15px var(--accent);">ЖУМУШ КАРТА</h1>
-        <p style="color: #888;">Өзүңө жакын жумушту тап</p>
-    </header>
+        :root {
+            --primary: #000000;
+            --secondary: #64748b;
+            --accent: #2563eb;
+            --bg: #f8fafc;
+        }
 
-    <div class="container">
-        <a href="/add" class="add-btn">+ ЖУМУШ ЖАРЫЯЛОО</a>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+            /* Фонго заманбап, ак-боз эстетикадагы сүрөт */
+            background-image: linear-gradient(rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.9)), 
+                              url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            color: var(--primary);
+        }
 
-        <h2 style="font-size: 1rem; color: #666; text-transform: uppercase; letter-spacing: 1px;">Жаңы жарыялар:</h2>
+        header {
+            padding: 80px 20px 40px;
+            text-align: center;
+        }
 
-        {% for job in jobs %}
-        <div class="job-card">
-            <div style="color: #666; font-size: 0.8rem;">{{ job.location }}</div>
-            <div class="job-title">{{ job.title }}</div>
-            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <span class="price">{{ job.price }}</span>
-                <a href="https://wa.me/{{ job.wa }}" class="wa-link"><span class="wa-btn">WhatsApp</span></a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+        h1 {
+            font-weight: 800;
+            font-size: 3.5rem;
+            margin: 0;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #000, #444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    <footer>© 2026 JUMUSH BAR | КЫРГЫЗСТАН</footer>
-</body>
-</html>
-"""
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
 
-@app.route('/')
-def index():
-    return render_template_string(HTML_MAIN, jobs=jobs)
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-@app.route('/add')
-def add():
-    return "<h3>Азырынча жарыя берүү үчүн бизге жазыңыз. <br> База туташтырылгандан кийин өзүңүз кошо аласыз.</h3><a href='/'>Артка</a>"
+        .nav-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
 
-app = app
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-black {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn-black:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-ghost {
+            border: 1px solid #e2e8f0;
+            color: #000;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Заманбап жумуш карталары */
+        .job-card {
+            background: rgba(255, 255, 255, 0.
+    
