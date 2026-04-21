@@ -1,12 +1,14 @@
-from flask import Flask, render_template_string, request, redirect
+from flask import Flask, render_template_string, request, redirect, session
 
 app = Flask(__name__)
+app.secret_key = 'premium_key_2026'
 
-# Жумуштардын тизмеси
+# Убактылуу база
+users = {}
 jobs = [
-    {"location": "Бишкек", "title": "Мобилограф / Видеомейкер", "price": "40 000 сом", "wa": "996555001122"},
-    {"location": "Ош", "title": "SMM адиси", "price": "25 000 сом", "wa": "996700112233"},
-    {"location": "Бишкек", "title": "Графикалык дизайнер", "price": "50 000 сом", "wa": "996500445566"}
+    {"cat": "Медиа", "loc": "Бишкек", "title": "Мобилограф", "price": "45000 сом", "wa": "996555001122"},
+    {"cat": "IT", "loc": "Ош", "title": "Программист", "price": "80000 сом", "wa": "996700112233"},
+    {"cat": "Кызмат", "loc": "Бишкек", "title": "Администратор", "price": "30000 сом", "wa": "996500445566"}
 ]
 
 HTML_MAIN = """
@@ -15,92 +17,96 @@ HTML_MAIN = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JUMUSH BAR | Профессионалдык деңгээл</title>
+    <title>JUMUSH BAR | Professional</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #000000;
-            --secondary: #64748b;
-            --accent: #2563eb;
-            --bg: #f8fafc;
-        }
-
+        :root { --bg: #ffffff; --text: #0f172a; --accent: #2563eb; --card: rgba(255, 255, 255, 0.8); }
+        
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0;
-            background-color: var(--bg);
-            /* Фонго заманбап, ак-боз эстетикадагы сүрөт */
-            background-image: linear-gradient(rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.9)), 
-                              url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-attachment: fixed;
-            color: var(--primary);
+            margin: 0; background: var(--bg); color: var(--text);
+            overflow-x: hidden;
         }
 
-        header {
-            padding: 80px 20px 40px;
-            text-align: center;
+        /* Анимацияланган фон */
+        .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        .shape {
+            position: absolute; border-radius: 50%;
+            background: linear-gradient(45deg, rgba(37,99,235,0.05), rgba(37,99,235,0.02));
+            animation: move 20s infinite alternate;
         }
 
-        h1 {
-            font-weight: 800;
-            font-size: 3.5rem;
-            margin: 0;
-            letter-spacing: -2px;
-            background: linear-gradient(to right, #000, #444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(100px, 100px); }
         }
 
-        .subtitle {
-            color: var(--secondary);
-            font-size: 1.1rem;
-            margin-top: 10px;
+        header { padding: 60px 20px; text-align: center; }
+        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0; }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        /* Категориялар */
+        .categories {
+            display: flex; gap: 10px; overflow-x: auto; padding: 20px 0;
+            justify-content: center; scrollbar-width: none;
+        }
+        .cat-tag {
+            padding: 8px 20px; background: white; border: 1px solid #e2e8f0;
+            border-radius: 50px; font-size: 0.9rem; white-space: nowrap; cursor: pointer;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Карта стили */
+        .job-card {
+            background: var(--card); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.05); border-radius: 24px;
+            padding: 25px; margin-bottom: 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .nav-actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 50px;
-        }
-
-        .btn {
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: #000; }
 
         .btn-black {
-            background: #000;
-            color: #fff;
+            background: #000; color: #fff; padding: 14px 28px;
+            border-radius: 14px; text-decoration: none; font-weight: 600;
         }
-
-        .btn-black:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        
+        .price { font-size: 1.4rem; font-weight: 800; color: #000; }
+        .wa-btn {
+            color: #25d366; text-decoration: none; font-weight: 700;
+            padding: 8px 16px; border: 1.5px solid #25d366; border-radius: 12px;
         }
+        .wa-btn:hover { background: #25d366; color: #fff; }
 
-        .btn-ghost {
-            border: 1px solid #e2e8f0;
-            color: #000;
-            background: rgba(255,255,255,0.5);
-            backdrop-filter: blur(10px);
-        }
+        .user-auth { position: absolute; top: 20px; right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="shape" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
+        <div class="shape" style="width: 300px; height: 300px; bottom: 10%; right: 5%; animation-duration: 15s;"></div>
+    </div>
 
-        .btn-ghost:hover {
-            background: rgba(255,255,255,0.8);
-        }
+    <div class="user-auth">
+        {% if user %}
+            <span>{{ user }}</span> | <a href="/logout">Чыгуу</a>
+        {% else %}
+            <a href="/login" class="cat-tag" style="text-decoration:none;">Кирүү</a>
+        {% endif %}
+    </div>
 
-        /* Заманбап жумуш карталары */
-        .job-card {
-            background: rgba(255, 255, 255, 0.
-    
+    <header>
+        <h1>Jumush Bar</h1>
+        <p style="color: #64748b;">Профессионалдык жумуш издөө жана жарыялоо</p>
+    </header>
+
+    <div class="container">
+        <div style="text-align:center; margin-bottom: 40px;">
+            <a href="/add" class="btn-black">+ Жарыя кошуу</a>
+        </div>
+
+        <div class="categories">
+            <div class="cat-tag">Бардыгы</div>
