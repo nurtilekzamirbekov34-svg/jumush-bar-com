@@ -31,6 +31,7 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
     <title>ЖУМУШ КАРТА - Локация боюнча</title>
     <style>
         :root { --accent: #00ff41; --bg: #050505; }
@@ -67,12 +68,8 @@ HTML_TEMPLATE = """
             font-weight: bold; 
             font-size: 0.9rem;
         }
-    </style><meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
+    </style>
 </head>
-<body>
-    <div class="header">
-        <h1 style="margin:0;">ЖУМУШ КАРТА</h1>
-</head><meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
 <body>
     <div class="header">
         <h1 style="margin:0;">ЖУМУШ КАРТА</h1>
@@ -91,7 +88,6 @@ HTML_TEMPLATE = """
             </div>
             {% endfor %}
         </div>
-    
         {% endfor %}
     </div>
     
