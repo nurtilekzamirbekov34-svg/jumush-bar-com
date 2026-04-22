@@ -84,3 +84,42 @@ INDEX_HTML = STYLE + """
     <div class="glass-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="color: var(--neon); font-size: 11px; font-weight: 8
+import os
+from flask import Flask, render_template_string, request, redirect, url_for
+from supabase import create_client, Client
+
+app = Flask(__name__)
+
+# СУПАБЕЙС ТУТАШТЫРУУ (Бул маалыматтарды Supabase панелинден аласың)
+SUPABASE_URL = "СЕНИН_SUPABASE_URL_УШУЛ_ЖЕРГЕ"
+SUPABASE_KEY = "СЕНИН_SUPABASE_KEY_УШУЛ_ЖЕРГЕ"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# --- СТИЛЬ (Мурункудай калат, өзгөртүлгөн жок) ---
+STYLE = """ ... (мурунку дизайн коддору) ... """
+
+@app.route('/')
+def index():
+    # Базадан бардык жумуштарды алуу
+    response = supabase.table("jobs").select("*").order("created_at", desc=True).execute()
+    db_jobs = response.data
+    return render_template_string(INDEX_HTML, jobs=db_jobs)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_job():
+    if request.method == 'POST':
+        cat = request.form.get('cat')
+        icons = {"Медиа": "🎥", "IT": "💻", "Кызмат": "🛠️"}
+        
+        new_data = {
+            "title": request.form.get('title'),
+            "price": request.form.get('price'),
+            "loc": "Бишкек",
+            "cat": cat,
+            "icon": icons.get(cat, "💼"),
+            "wa": request.form.get('wa')
+        }
+        # Базага жаңы маалымат кошуу
+        supabase.table("jobs").insert(new_data).execute()
+        return redirect(url_for('index'))
+    return render_template_string(ADD_JOB_HTML)
