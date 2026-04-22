@@ -15,112 +15,171 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
-    <title>ЖУМУШ КАРТА</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>JUMUSH BAR | PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at top right, #1a1a2e, #0f0f0f);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        :root {
+            --neon: #00ff41;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --bg: #050505;
         }
-        .container { width: 100%; max-width: 480px; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Плавный фон */
+        .gradient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, #1a3a1e, #050505);
+            z-index: -1;
+        }
+
+        .container { width: 100%; max-width: 440px; margin: 0 auto; padding: 25px; }
+
+        /* Плавный анимациялар */
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .header {
             text-align: center;
-            padding: 40px 0;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px 20px;
+            animation: reveal 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        
-        h1 {
-            font-weight: 700;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            background: linear-gradient(to right, #00ff41, #00d2ff);
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: -1px;
+            margin-bottom: 30px;
+            background: linear-gradient(to bottom, #fff, #888);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .nav-btns { display: flex; gap: 12px; margin-top: 20px; }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 18px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary { background: white; color: black; }
+        .btn-secondary { background: var(--glass); color: white; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .btn:active { transform: scale(0.96); }
+
+        .job-list-title {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 20px 0 15px 5px;
+            font-weight: 600;
+        }
+
+        .job-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
+            animation: reveal 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            transition: 0.3s;
+        }
+
+        .job-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cat-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--neon);
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .job-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .job-price {
+            font-size: 24px;
+            font-weight: 300;
+            color: #fff;
             margin-bottom: 20px;
         }
 
-        .nav-btns { display: flex; gap: 12px; justify-content: center; padding: 0 20px; }
-        
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
+        .wa-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--neon);
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
-            text-align: center;
-            transition: all 0.4s;
-            border: 1px solid rgba(0, 255, 65, 0.5);
-        }
-        
-        .btn-reg { color: #00ff41; background: transparent; }
-        .btn-add { background: #00ff41; color: #000; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); }
-
-        .job-card {
-            background: rgba(255, 255, 255, 0.05);
-            margin-bottom: 16px;
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .job-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: #00ff41;
+            font-weight: 600;
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
         }
 
-        .cat-tag { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
-        .title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .price { font-size: 20px; color: #00ff41; font-weight: 700; margin-bottom: 12px; }
-        
-        .wa-btn {
-            display: inline-block;
-            color: #000;
-            background: #fff;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            text-decoration: none;
-        }
+        /* Ар бир карта кечигип чыгат */
+        .job-card:nth-child(1) { animation-delay: 0.1s; }
+        .job-card:nth-child(2) { animation-delay: 0.2s; }
+        .job-card:nth-child(3) { animation-delay: 0.3s; }
+
     </style>
 </head>
 <body>
+    <div class="gradient-bg"></div>
     <div class="container">
-        <div class="header">
-            <h1>Jumush Bar</h1>
+        <header class="header">
+            <div class="logo">JUMUSH BAR</div>
             <div class="nav-btns">
-                <a href="#" class="btn btn-reg">Кирүү</a>
-                <a href="#" class="btn btn-add">+ Жумуш</a>
+                <a href="#" class="btn btn-secondary">Катталуу</a>
+                <a href="#" class="btn btn-primary">+ Жумуш кошуу</a>
             </div>
-        </div>
+        </header>
 
-        <p style="margin-left: 10px; margin-bottom: 15px; color: #666; font-size: 14px;">Жакын жердеги жумуштар:</p>
+        <p class="job-list-title">Жакын жерде</p>
 
         {% for job in jobs %}
         <div class="job-card">
-            <p class="cat-tag">{{ job.cat }} • {{ job.loc }}</p>
-            <h2 class="title">{{ job.title }}</h2>
-            <p class="price">{{ job.price }}</p>
-            <a href="https://wa.me/{{ job.wa }}" class="wa-btn">WhatsApp жазуу</a>
+            <span class="cat-badge">{{ job.cat }} • {{ job.loc }}</span>
+            <h2 class="job-title">{{ job.title }}</h2>
+            <div class="job-price">{{ job.price }}</div>
+            <a href="https://wa.me/{{ job.wa }}" class="wa-action">
+                <span>WhatsApp жазуу</span>
+                <span>→</span>
+            </a>
         </div>
         {% endfor %}
     </div>
@@ -133,118 +192,3 @@ def index():
     return render_template_string(HTML_TEMPLATE, jobs=jobs)
 
 app = app
-from flask import Flask, render_template_string
-
-app = Flask(__name__)
-
-jobs = [
-    {"cat": "Медиа", "loc": "Бишкек", "title": "Мобилограф", "price": "45,000 сом", "wa": "996555001122"},
-    {"cat": "IT", "loc": "Ош", "title": "Программист", "price": "80,000 сом", "wa": "996700112233"},
-    {"cat": "Кызмат", "loc": "Бишкек", "title": "Администратор", "price": "30,000 сом", "wa": "996500445566"}
-]
-
-HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html lang="ky">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="dQctr8uZKssnExslN2rknNpoEx7HkQtmovkfU1whtdE" />
-    <title>ЖУМУШ КАРТА</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* Фондогу сурот */
-        .bg-image {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://images.unsplash.com/photo-1516339901600-2e1a62dc0c45?q=80&w=2000') no-repeat center center/cover;
-            opacity: 0.4; /* Суротту бир аз тунарык кылуу */
-            filter: blur(8px); /* Плавный фокус */
-            z-index: -1;
-        }
-
-        .container { width: 100%; max-width: 480px; padding: 20px; }
-
-        /* Анимациялар */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        h1 {
-            font-weight: 700;
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            background: linear-gradient(45deg, #00ff41, #00d2ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
-        }
-
-        .nav-btns { display: flex; gap: 15px; }
-
-        .btn {
-            flex: 1;
-            padding: 15px;
-            border-radius: 15px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn-reg { border: 2px solid #00ff41; color: #00ff41; }
-        .btn-add { background: #00ff41; color: #000; }
-
-        .btn:active { transform: scale(0.95); }
-
-        .job-card {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(10px);
-            margin-bottom: 20px;
-            padding: 25px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 1s ease-out both;
-            transition: 0.4s;
-        }
-
-        .job-card:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: #00ff41;
-            transform: translateX(5px);
-        }
-
-        /* Ар бир карта ар башка убакытта чыгышы учун */
-        .job-card:nth-child(3) { animation-delay: 0.2s; }
-        .job-card:nth-child(4) { animation-delay: 0.4s; }
-        .job-card:nth-child(5) { animation-delay: 0.6s; }
-
-        .cat-tag { font-size: 11px; color: #00ff41; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .title { font-size: 20px; font-weight: 700; margin-bottom:
