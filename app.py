@@ -1,131 +1,68 @@
 from flask import Flask, render_template_string, request, redirect, url_for
 
+# Vercel үчүн объектти түзөбүз
 app = Flask(__name__)
 
-# Временная база данных (будет работать, пока сайт запущен)
+# Маалыматтар базасы (убактылуу)
 jobs = [
-    {"cat": "Медиа", "loc": "Бишкек", "title": "Профессиональный Мобилограф", "price": "60,000 сом", "wa": "996555001122", "icon": "🎥"},
-    {"cat": "IT", "loc": "Ош", "title": "Python Разработчик", "price": "120,000 сом", "wa": "996700112233", "icon": "💻"},
-    {"cat": "Услуги", "loc": "Бишкек", "title": "SMM Менеджер", "price": "45,000 сом", "wa": "996500445566", "icon": "📱"}
+    {"cat": "Медиа", "loc": "Бишкек", "title": "Профессионал Мобилограф", "price": "60,000 сом", "wa": "996555001122", "icon": "🎥"},
+    {"cat": "IT", "loc": "Ош", "title": "Python Программист", "price": "120,000 сом", "wa": "996700112233", "icon": "💻"}
 ]
 
-# --- ЕДИНЫЙ ДИЗАЙН (CSS) ---
+# --- ДИЗАЙН (CSS) ---
 STYLE = """
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
     :root { --neon: #00ff41; --glass: rgba(15, 15, 15, 0.8); --border: rgba(255, 255, 255, 0.1); }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
-        font-family: 'Inter', sans-serif; 
-        color: white; 
-        background: #000 url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-        background-size: cover;
+        font-family: 'Inter', sans-serif; background: #000 url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+        background-size: cover; color: white;
     }
-
-    body::before {
-        content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
-        z-index: -1;
-    }
-
-    .container { max-width: 480px; margin: 0 auto; padding: 20px; min-height: 100vh; }
-
-    header { text-align: center; padding: 60px 0 30px 0; }
-    .logo { font-family: 'Outfit'; font-size: 45px; font-weight: 900; letter-spacing: -2px; margin-bottom: 5px; }
-    
-    .search-bar {
-        background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(15px);
-        border-radius: 20px; padding: 15px 20px; margin-bottom: 30px;
-    }
-    .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 16px; }
-
-    .glass-card { 
-        background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--border); border-radius: 28px; padding: 25px; margin-bottom: 20px; 
-        transition: 0.3s ease; animation: fadeInUp 0.6s ease both;
-    }
-    .glass-card:hover { transform: translateY(-5px); border-color: var(--neon); }
-
-    .badge {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 10px;
-        font-size: 11px; font-weight: 800; color: var(--neon); text-transform: uppercase; margin-bottom: 15px;
-    }
-
-    .job-title { font-family: 'Outfit'; font-size: 22px; font-weight: 700; margin-bottom: 5px; }
-    .price { font-size: 26px; font-weight: 300; color: #fff; margin-bottom: 20px; }
-
-    .btn { 
-        display: block; width: 100%; padding: 18px; border-radius: 20px; 
-        text-decoration: none; font-weight: 800; text-align: center; 
-        transition: 0.3s; cursor: pointer; font-family: 'Outfit'; border: none;
-    }
-    .btn-primary { background: white; color: black; margin-bottom: 12px; }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--border); }
-
-    .wa-link {
-        display: flex; justify-content: space-between; align-items: center;
-        color: var(--neon); text-decoration: none; font-weight: 700;
-        border-top: 1px solid var(--border); padding-top: 15px;
-    }
-
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    input, select {
-        width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 15px;
-        border: 1px solid var(--border); background: rgba(0,0,0,0.5); color: white; outline: none;
-    }
+    body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: -1; }
+    .container { max-width: 480px; margin: 0 auto; padding: 20px; }
+    .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 25px; padding: 20px; margin-bottom: 15px; }
+    .btn { display: block; width: 100%; padding: 15px; border-radius: 15px; text-decoration: none; text-align: center; font-weight: 800; border: none; cursor: pointer; }
+    .btn-primary { background: white; color: black; }
+    input, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.5); color: white; }
 </style>
 """
 
-# --- ГЛАВНАЯ СТРАНИЦА ---
 INDEX_HTML = STYLE + """
 <div class="container">
-    <header>
-        <div class="logo">JUMUSH BAR</div>
-        <p style="color: #999; font-size: 13px; margin-bottom: 30px;">Твой путь к новой работе начинается здесь</p>
-        
-        <div class="search-bar">
-            <input type="text" placeholder="Поиск работы (например: Мобилограф)">
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <a href="{{ url_for('add_job') }}" class="btn btn-primary" style="flex: 1.2;">+ Добавить</a>
-            <a href="#" class="btn btn-secondary" style="flex: 0.8;">Войти</a>
+    <header style="text-align: center; padding: 40px 0;">
+        <h1 style="font-family: 'Outfit'; font-size: 40px;">JUMUSH BAR</h1>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <a href="{{ url_for('add_job') }}" class="btn btn-primary" style="flex: 1;">+ Жарыя кошуу</a>
         </div>
     </header>
-
     {% for job in jobs %}
     <div class="glass-card">
-        <div class="badge"><span>{{ job.icon }}</span> {{ job.cat }} • {{ job.loc }}</div>
-        <h2 class="job-title">{{ job.title }}</h2>
-        <div class="price">{{ job.price }}</div>
-        <a href="https://wa.me/{{ job.wa }}" class="wa-link">
-            <span>Написать в WhatsApp</span> <span>→</span>
-        </a>
+        <div style="color: var(--neon); font-size: 11px; font-weight: 800;">{{ job.icon }} {{ job.cat }}</div>
+        <h2 style="font-family: 'Outfit'; margin: 5px 0;">{{ job.title }}</h2>
+        <div style="font-size: 24px; font-weight: 300;">{{ job.price }}</div>
+        <a href="https://wa.me/{{ job.wa }}" style="color: var(--neon); text-decoration: none; display: block; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;">WhatsApp →</a>
     </div>
     {% endfor %}
 </div>
 """
 
-# --- СТРАНИЦА ДОБАВЛЕНИЯ ---
 ADD_HTML = STYLE + """
 <div class="container">
     <div class="glass-card" style="margin-top: 50px;">
-        <h2 style="font-family: 'Outfit'; margin-bottom: 25px; text-align: center;">Новая вакансия</h2>
+        <h2 style="text-align: center; margin-bottom: 20px;">Жаңы жарыя</h2>
         <form method="POST">
-            <input type="text" name="title" placeholder="Название вакансии" required>
-            <input type="text" name="price" placeholder="Зарплата (например: 50к)" required>
-            <input type="text" name="loc" placeholder="Город (например: Бишкек)" required>
+            <input type="text" name="title" placeholder="Жумуштун аты" required>
+            <input type="text" name="price" placeholder="Айлыгы" required>
+            <input type="text" name="loc" placeholder="Шаар" required>
             <select name="cat">
                 <option value="Медиа">🎥 Медиа</option>
                 <option value="IT">💻 IT</option>
-                <option value="Услуги">🛠️ Услуги</option>
+                <option value="Услуги">🛠️ Кызмат</option>
             </select>
-            <input type="text" name="wa" placeholder="WhatsApp (без +)" required>
-            <button type="submit" class="btn btn-primary">Опубликовать</button>
-            <a href="{{ url_for('index') }}" style="display:block; text-align:center; margin-top:20px; color:#999; text-decoration:none;">Назад</a>
+            <input type="text" name="wa" placeholder="WhatsApp номериңиз" required>
+            <button type="submit" class="btn btn-primary">Жарыялоо</button>
+            <a href="{{ url_for('index') }}" style="display:block; text-align:center; margin-top:15px; color:#999; text-decoration:none;">Артка</a>
         </form>
     </div>
 </div>
@@ -152,5 +89,5 @@ def add_job():
         return redirect(url_for('index'))
     return render_template_string(ADD_HTML)
 
-if __name__ == "__main__":
-    app.run()
+# Vercel үчүн эң маанилүү сап:
+app = app
